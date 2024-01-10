@@ -1,0 +1,60 @@
+function bubble_temp_and_pres()
+
+    % Constants for Antoine's equations
+    A1 = 14.5463;
+    B1 = 2940.46;
+    C1 = 237.22;
+
+    A2 = 14.2724;
+    B2 = 2945.467;
+    C2 = 224.0;
+
+    A3 = 14.2043;
+    B3 = 2972.64;
+    C3 = 209.00;
+
+    % Part (i) - P and xi given t=70°C, y1=0.5, y2=0.3, y3=0.2
+    t1 = 70; % Temperature in °C
+    y1 = 0.5;
+    y2 = 0.3;
+    y3 = 0.2;
+
+    % Calculate P using Raoult's law
+    P1 = exp(A1 - B1 / (t1 + C1));
+    P2 = exp(A2 - B2 / (t1 + C2));
+    P3 = exp(A3 - B3 / (t1 + C3));
+    P = y1 * P1 + y2 * P2 + y3 * P3;
+
+    % Calculate xi using Raoult's law
+    x1 = y1 * P1 / P;
+    x2 = y2 * P2 / P;
+    x3 = y3 * P3 / P;
+
+    % Display results for Part (i)
+    disp('Part (i): P and xi given t=70°C, y1=0.5, y2=0.3, y3=0.2')
+    disp(['P: ', num2str(P), ' kPa'])
+    disp(['x1: ', num2str(x1)])
+    disp(['x2: ', num2str(x2)])
+    disp(['x3: ', num2str(x3)])
+    disp(' ')
+
+    % Part (ii) - t and xi given P=90kPa, y1=0.6, y2=0.2, y3=0.2
+    P_target = 90; % Target pressure in kPa
+    y1 = 0.6;
+    y2 = 0.2;
+    y3 = 0.2;
+
+    % Solve for t using Antoine's equation and Raoult's law
+    fun = @(t) y1 * exp(A1 - B1 / (t + C1)) + y2 * exp(A2 - B2 / (t + C2)) + y3 * exp(A3 - B3 / (t + C3)) - P_target;
+    t2 = fsolve(fun, 70);
+
+    % Calculate xi using Raoult's law
+    P1 = exp(A1 - B1 / (t2 + C1));
+    P2 = exp(A2 - B2 / (t2 + C2));
+    P3 = exp(A3 - B3 / (t2 + C3));
+    x1 = y1 * P1 / P_target;
+    x2 = y2 * P2 / P_target;
+    x3 = y3 * P3 / P_target;
+
+
+end
