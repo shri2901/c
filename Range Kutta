@@ -1,45 +1,47 @@
-#include<stdio.h>
+(Given x initial=0, x final = 0.5, T inital=1000 interval =0.025)
+(if these values changed then makes changes in line number 38,39,40,41)
+#include <iostream.h>
+#include <math.h>
+#include<conio.h>
 
-#define f(x,y) ((-40*x*x*x)+(72*x*x)+(24*x)-70)
 
-int main() { 
-    float x0, y0, xn, h, yn, k1, k2, k3, k4, k; int i, n;
 
-printf("Enter Initial Condition x0\n"); 
-scanf("%f", &x0) ; 
-printf("y0 = "); 
-scanf("%f", &y0);
-
-printf("Enter calculation point xn = "); scanf("%f", &xn);
-
-printf("Enter number of steps: "); scanf("%d", &n);
-
-h=(xn-x0)/n ; printf("\nx0\ty0\tyn\n"); for( i=0 ; i < n; i++) {
-
-k1 = h * (f(x0, y0));
-
-k2 = h * (f((x0+h/2), (y0+k1/2)));
-
-k3 = h * (f((x0+h/2), (y0+k2/2)));
-
-k4=h *(f((x0+h),(y0+k3))) ;
-
-k = (k1+2*k2+2*k3+k4)/6;
-
-yn = y0 + k;
-
-printf("%0.4f\t%0.4f\t%0.4f\n",x0,y0,yn);
-
-x0=x0+h;
-
-y0=yn;
-
+double dT_dx(double x, double T) {
+    return -40 * pow(x, 3) + 72 * pow(x, 2) + 24 * x - 70 + 0 * T;
 }
 
-/* Displaying result */
 
-printf("\nValue of y at x = %0.2f is %0.3f",xn, yn);
+double rungeKutta(double x0, double T0, double h, double maxX) {
+    double k1, k2, k3, k4;
+    double x = x0;
+    double T = T0;
 
-return 0;
+    cout << "x\t\tT\n";
+    cout << "-----------------\n";
 
+    while (x <= maxX) {
+        cout << x << "\t\t" << T << "\n";
+
+        k1 = h * dT_dx(x, T);
+        k2 = h * dT_dx(x + h / 2, T + k1 / 2);
+        k3 = h * dT_dx(x + h / 2, T + k2 / 2);
+        k4 = h * dT_dx(x + h, T + k3);
+
+        T = T + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+        x = x + h;
+    }
+
+    return T;
+}
+
+void main() {
+    double x0 = 0.0;   // Initial value of x
+    double T0 = 1000.0; // Initial value of T at x = 0
+    double h = 0.025;   // Step size
+    double maxX = 0.51;  // Maximum value of x
+
+    rungeKutta(x0, T0, h, maxX);
+
+
+    getch();
 }
