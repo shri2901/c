@@ -1,66 +1,69 @@
-#include <stdio.h> 
+(xw,xf,F,a)
+(for changing xw,xf,F goto line no. 48,49,50 and for a goto line 10)
+
+#include <iostream.h>
 #include <math.h>
+#include<conio.h>
 
-float func(float a, float b, float c, float t);
-
-int main() 
-{
-
-float t1, t2, a, b, c, h, sum, sum1 = 0, sum2 = 0, sum3 = 0, I1, I2;
-
-int n, i; 
-printf("enter the initial and final temp: ");
-
-scanf("%f%f", &t1, &t2); 
-printf("enter the constant values a, b,c:");
-
-scanf("%f %f %f", &a, &b, &c); 
-
-printf("enter no. of iterations:");
-
-scanf("%d", &n); 
-h = (t2 - t1) / n; 
-
-sum=func(a,b,c, t1)+func(a, b, c, t2);
-
-for (i = 1; i < n; i++) 
-{ 
-    sum1 = sum1 + func(a, b, c, (t1 + (i* h))); 
-    } 
-I1 = (h* (sum + (2 * sum1))) / 2; 
-I1 = 1 / (t2 - t1);
-
-printf("the specific heat by trapezoidal method is %.2f\n", I1);
-
-for(i=1;i<n;i = i+2) 
-{ 
-    sum2 = sum2 + func(a, b,c, (t1+(i*h)));
-}
-for(i=2;i<n;i=i + 2)
-{
-    sum3 = sum3 + func(a, b, c, (t1+(i*h)));
-}
-    if (n % 2 == 0) 
-{
-I2 = (h* (sum + (4* sum2) + (2 * sum3))) / 3;
-
-I2 = I2 / (t2 - t1);
-
-printf("the specific heat by simpsons 1/3 method is %.2f\n", I2);
-}
-else
-{
-    printf("cannot use simpsons method\n"); 
-    
-} 
-return 0;
+// Function to calculate y' based on the given equation
+double calculate_y_prime(double x) {
+    const double a = 2.5;
+    return (a * x) / (1 + (a - 1) * pow(x, 0.98));
 }
 
-float func(float a, float b, float c, float t)
+// Function to calculate the integrand in the equation
+double integrand(double x) {
+    double y_prime = calculate_y_prime(x);
+    return 1 / (y_prime - x);
+}
 
-{ 
-    float cp; cp = a + (b *t) + (c * t *t);
+// Simpson's 1/3 method for numerical integration
+double simpsons_rule(double a, double b, int n) {
+    double h = (b - a) / n;
+    double result = integrand(a) + integrand(b);
 
-return fabs(cp);
+    for (int i = 1; i < n; i += 2) {
+        result += 4 * integrand(a + i * h);
+    }
 
+    for (int j = 2; j < n - 1; j += 2) {
+        result += 2 * integrand(a + j * h);
+    }
+
+    return (h / 3) * result;
+}
+
+// Trapezoidal method for numerical integration
+double trapezoidal_rule(double a, double b, int n) {
+    double h = (b - a) / n;
+    double result = integrand(a) + integrand(b);
+
+    for (int k = 1; k < n; ++k) {
+        result += 2 * integrand(a + k * h);
+    }
+
+    return (h / 2) * result;
+}
+
+void main() {
+    const double xw = 0.03; // Initial composition of residue (3 mole% A)
+    const double xf = 0.2;  // Final composition of the mixture
+    const double F = 500;    // Initial moles of the mixture
+
+    // Using Simpson's 1/3 method
+    int n = 1000; // Number of intervals for integration
+    double integral_simpson = simpsons_rule(xw, xf, n);
+
+    // Using Trapezoidal method for comparison
+    double integral_trapezoidal = trapezoidal_rule(xw, xf, n);
+
+    // Calculate total moles left in the still using the equation
+    double W_simpson = F / exp(integral_simpson);
+    double W_trapezoidal = F / exp(integral_trapezoidal);
+
+    // Display results
+    cout << "Total moles using Simpson's 1/3 method: " << W_simpson << " moles\n";
+    cout << "Total moles using Trapezoidal method: " << W_trapezoidal << " moles\n";
+
+    getch();
 }
