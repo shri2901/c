@@ -1,52 +1,65 @@
-#include<stdio.h>
-#include<math.h>
- void main()
-{
+(T,P,Tc,Pc)
+(If these values changed then male changes in the line number 42,43,44,45)
 
- float f,f1, a, b, v1,vo, P, T, Pc, Tc, R=8.314;
+#include <iostream.h>
+#include <math.h>
+#include<conio.h>
 
-int count;
+const double R = 0.0821; 
 
-printf("Enter the values of actual pressure and temperature\n");
-
-scanf("%f %f", &P, &T);
-
-printf("Enter the values of critical pressure and temperature \n");
-
-scanf("%f %f", &Pc,&Tc);
-
-a=(27*R*R*Tc*Tc)/(64*Pc);
-
-b=(R*Tc)/(8*Pc);
-
-vo=(R*T)/P;
-
-printf("value of a and b are %f and %f\n",a,b);
-
-printf("ideal molar volume is %f \n",vo);
-
-{
-
-NR:
-
-f=(P+(a/(vo*vo)))*(vo-b)-(R*T);
-
-f1=(vo-b)*((-2*a)/(vo*vo*vo))+P+(a/vo*vo);
-
-v1=vo-f/f1;
-
+double calculate_a(double Tc, double Pc) {
+    return (27 * pow(R, 2) * pow(Tc, 2)) / (64 * Pc);
 }
 
-if (fabs(((v1-vo)/vo)<0.001))
-
- printf("molar volume is %f \n",v1);
-
- else
-
-{
-
- vo=v1;
-
-goto NR;
+double calculate_b(double Tc, double Pc) {
+    return (R * Tc) / (8 * Pc);
 }
+
+double van_der_Waals(double V, double T, double P, double a, double b) {
+    return (P + a / pow(V, 2)) * (V - b) - R * T;
+}
+
+double derivative(double V, double a, double b) {
+    return (2 * a) / pow(V, 3) - 1 / (V - b);
+}
+
+double newton_raphson(double V, double T, double P, double a, double b, int max_iter, double epsilon) {
+    for (int i = 0; i < max_iter; ++i) {
+        double f = van_der_Waals(V, T, P, a, b);
+        double f_prime = derivative(V, a, b);
+
+        V = V - f / f_prime;
+
+        if (fabs(f) < epsilon) {
+            break;
+        }
+    }
+
+    return V;
+}
+
+void main() {
+    double Tc = 304;  // Critical temperature in K
+    double Pc = 72.9;  // Critical pressure in atm
+    double T = 273.15;  // Temperature in K
+    double P = 30.5;  // Pressure in atm
+
+    double a = calculate_a(Tc, Pc);
+    double b = calculate_b(Tc, Pc);
+
+   
+    double V_initial = R * T / P;
+
+    int max_iter = 1000;
+    double epsilon = 1e-6;
+
+    double molar_volume = newton_raphson(V_initial, T, P, a, b, max_iter, epsilon);
+
+    cout << "Calculated values of constants a and b are "<< a << "atm L2 mol-2 and " << b << " L mol-1 " << endl;
+    
+    cout << "Initial value of Molar Volume of CO2 at " << T << " K and " << P << " atm: " << V_initial << " L/mol" << endl;
+
+    cout << "Molar Volume of CO2 at " << T << " K and " << P << " atm: " << molar_volume << " L/mol" << endl;
+
+    getch();
 }
