@@ -15,15 +15,14 @@ void main()
     printf("enter the values of c1, c2, c3, c4:\n");
     scanf("%f%f%f%f", &c1, &c2, &c3, &c4);
 
-   if((fabs(a1)>=fabs(a2+a3)) && (fabs(b2)>=fabs(b1+b3))&&(fabs(c3)>=fabs(c1 +c2)))
+   if((fabs(a1)>=fabs(a2+a3)) || (fabs(b2)>=fabs(b1+b3)) || (fabs(c3)>=fabs(c1 +c2)))
  {
 
   jacobi:
 
   X1=(a4-((a2*Yo)+(a3*Zo)))/a1; 
   X2=(b4-((b1*Xo)+(b3*Zo)))/b2;
-
- X3=(c4-((c1*Xo)+(c2*Yo)))/c3; 
+  X3=(c4-((c1*Xo)+(c2*Yo)))/c3; 
     
  }
   else 
