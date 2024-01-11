@@ -24,7 +24,7 @@ n=0;
     
 }
 
-if ((fabs(a1) >= fabs(a2 + a3)) && (fabs(b2) >= fabs(b1 + b3)) && (fabs(c3) >= fabs(c1 + c2))) 
+if ((fabs(a1) >= fabs(a2 + a3)) || (fabs(b2) >= fabs(b1 + b3)) || (fabs(c3) >= fabs(c1 + c2))) 
 { 
     GaussSeidal:
    X1=(a4-((a2*Yo)+(a3*Zo)))/ a1; 
